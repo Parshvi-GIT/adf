@@ -6,7 +6,7 @@
 		"type": "SqlServer",
 		"typeProperties": {
 			"connectionString": "integrated security=False;data source=LAPTOP-HIIL47UH\\SQLEXPRESS01;initial catalog=AdventureWorks2019;user id=parshvi",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlZjVmODM0OS1jN2E2LTQ5YmQtOGZlYi1jYjUwMTk3NTJiMGQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwOTM5YmE2MS01OWI3LTQwNGUtYTYzZC05ZDhiZjFiZThhZmIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "selfHosted-IR",

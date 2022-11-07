@@ -1,0 +1,9 @@
+{
+	"name": "parshvi-adf1",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "7043bd7e-b495-4ab5-8ace-2d7b935eeab2",
+		"tenantId": "e494068c-f03c-4dbf-ae26-1f67f7c32ea5"
+	}
+}

@@ -44,7 +44,7 @@
 										"type": "String"
 									},
 									"SourceSchemaName": {
-										"value": "dbo",
+										"value": "Source",
 										"type": "String"
 									},
 									"SourceTableName": {

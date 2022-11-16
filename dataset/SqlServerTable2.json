@@ -1,0 +1,26 @@
+{
+	"name": "SqlServerTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServer1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "FILENAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ExecutionFlag",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "LOOKUP_TABLE"
+		}
+	}
+}

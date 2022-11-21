@@ -259,20 +259,19 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SqlServerSource",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"sink": {
-									"type": "DelimitedTextSink",
+									"type": "DelimitedTextSource",
 									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"modifiedDatetimeStart": "2022-11-21T00:00:00.482Z",
+										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
+										"type": "DelimitedTextReadSettings"
 									}
+								},
+								"sink": {
+									"type": "SqlServerSink"
 								},
 								"enableStaging": false,
 								"translator": {
@@ -286,13 +285,13 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Sink_2",
+									"referenceName": "Sink",
 									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "Dummy_sink",
+									"referenceName": "Sink_2",
 									"type": "DatasetReference"
 								}
 							]

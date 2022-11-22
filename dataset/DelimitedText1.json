@@ -1,21 +1,17 @@
 {
-	"name": "Sink",
+	"name": "DelimitedText1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureDataLakeStorage1",
+			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"b": {
-				"type": "string"
-			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation",
-				"fileSystem": "ADF"
+				"type": "AzureBlobStorageLocation",
+				"fileName": "abcd.csv",
+				"container": "test"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

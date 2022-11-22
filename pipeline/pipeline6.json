@@ -271,7 +271,10 @@
 									}
 								},
 								"sink": {
-									"type": "SqlServerSink"
+									"type": "SqlServerSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": true,
+									"tableOption": "autoCreate"
 								},
 								"enableStaging": false,
 								"translator": {
@@ -292,7 +295,13 @@
 							"outputs": [
 								{
 									"referenceName": "Sink_2",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"c": {
+											"value": "@item().FILENAME",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -434,6 +443,14 @@
 				}
 			}
 		],
+		"variables": {
+			"k": {
+				"type": "Array"
+			},
+			"A": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

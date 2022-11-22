@@ -5,12 +5,20 @@
 			"referenceName": "SqlServer1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"c": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "SqlServerTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Sink_T"
+			"table": {
+				"value": "@dataset().c",
+				"type": "Expression"
+			}
 		}
 	}
 }

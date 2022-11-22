@@ -5,6 +5,11 @@
 			"referenceName": "SqlServer1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"n": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "SqlServerTable",
 		"schema": [
@@ -19,7 +24,10 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "LOOK_TBL"
+			"table": {
+				"value": "@dataset().n",
+				"type": "Expression"
+			}
 		}
 	}
 }

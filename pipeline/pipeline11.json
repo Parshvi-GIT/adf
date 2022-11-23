@@ -103,7 +103,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT DISTINCT FILENAME\nFROM LOOKUP_TABLE;",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT DISTINCT FILENAME\nFROM LOOKUP_TABLE where Priority_number =',string(pipeline().parameters.first))",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},

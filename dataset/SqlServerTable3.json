@@ -12,34 +12,7 @@
 		},
 		"annotations": [],
 		"type": "SqlServerTable",
-		"schema": [
-			{
-				"name": "EmployeeId",
-				"type": "int",
-				"precision": 10
-			},
-			{
-				"name": "Name",
-				"type": "nvarchar"
-			},
-			{
-				"name": "Designation",
-				"type": "nvarchar"
-			},
-			{
-				"name": "StartDate",
-				"type": "date"
-			},
-			{
-				"name": "EndDate",
-				"type": "date"
-			},
-			{
-				"name": "inactive",
-				"type": "int",
-				"precision": 10
-			}
-		],
+		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": {

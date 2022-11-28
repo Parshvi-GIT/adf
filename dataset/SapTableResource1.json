@@ -5,8 +5,19 @@
 			"referenceName": "SapTable1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"a": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "SapTableResource",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().a",
+				"type": "Expression"
+			}
+		}
 	}
 }

@@ -2,7 +2,7 @@
 	"name": "SapTableResource1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "SapTable1",
+			"referenceName": "LS_Sap_2",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {

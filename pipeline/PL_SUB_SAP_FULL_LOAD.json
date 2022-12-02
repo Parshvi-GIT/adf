@@ -1,9 +1,9 @@
 {
-	"name": "pipeline15",
+	"name": "PL_SUB_SAP_FULL_LOAD",
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup1",
+				"name": "LOOKUP_FULL_LOAD",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -29,11 +29,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "FOR_EACH",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "LOOKUP_FULL_LOAD",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -48,7 +48,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Copy data1",
+							"name": "SAP_TO_STG",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -67,7 +67,8 @@
 								"sink": {
 									"type": "SqlServerSink",
 									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
 								},
 								"enableStaging": false,
 								"translator": {
@@ -105,11 +106,11 @@
 							]
 						},
 						{
-							"name": "Copy data2",
+							"name": "STG_TO_DBO",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Copy data1",
+									"activity": "SAP_TO_STG",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -151,7 +152,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"b": {
-											"value": "@item().Source_tblname",
+											"value": "@item().Destinationtblname",
 											"type": "Expression"
 										}
 									}
@@ -171,11 +172,11 @@
 							]
 						},
 						{
-							"name": "Stored procedure1",
+							"name": "SP_FULL_LOAD",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Copy data2",
+									"activity": "STG_TO_DBO",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -189,6 +190,25 @@
 								"secureInput": false
 							},
 							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[sp_fullload]",
+								"storedProcedureParameters": {
+									"pipelinetriggertime": {
+										"value": {
+											"value": "@pipeline().TriggerTime",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"SourceTable": {
+										"value": {
+											"value": "@item().Source_tblname",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
 							"linkedServiceName": {
 								"referenceName": "SqlServer1",
 								"type": "LinkedServiceReference"

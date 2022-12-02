@@ -1,0 +1,65 @@
+{
+	"name": "SAP_LOOKUP_FINAL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServer1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Source_tblname",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Destinationtblname",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Destinationtblschema",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Loadtype",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Lastmodifieddate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Deltacondition",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ExecutionFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PriorityList",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DependentOnTable",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DependentPrimaryKey",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PrimaryKey",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SAP_LOOKUP2"
+		}
+	}
+}

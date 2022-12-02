@@ -1,0 +1,21 @@
+{
+	"name": "LS_Sap_2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SapTable",
+		"typeProperties": {
+			"clientId": "200",
+			"language": "",
+			"sncMode": false,
+			"userName": "Adgupta",
+			"server": "20.232.25.37",
+			"systemNumber": "10",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlMTZkNTQwYS1iODliLTRkZmQtOTA2Ni1iY2MzMTIzZWI2ZDQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "selfHosted-IR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

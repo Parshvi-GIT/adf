@@ -1,39 +1,13 @@
 {
-	"name": "PL_SUB_SAP_DELTA_LOAD",
+	"name": "PL_SUB_SAP_DEPENDENT_DELTA_LOAD",
 	"properties": {
 		"activities": [
 			{
-				"name": "LOOKUP_DELTA_LOAD",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "select * from SAP_LOOKUP2 WHERE Loadtype= 'Delta'",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "SAP_LOOKUP_FINAL",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "ForEach1",
+				"name": "ForEach2",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "LOOKUP_DELTA_LOAD",
+						"activity": "LOOKUP_DEPENDENT_DELTA",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -42,15 +16,47 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('LOOKUP_DELTA_LOAD').output.value",
+						"value": "@activity('LOOKUP_DEPENDENT_DELTA').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "DELTA_LOAD_COPY",
-							"type": "Copy",
+							"name": "LOOKUP_FINAL",
+							"type": "Lookup",
 							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SAP_LOOKUP_FINAL",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "CP_SOURCE_TO_STG",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "LOOKUP_FINAL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -67,8 +73,7 @@
 								"sink": {
 									"type": "SqlServerSink",
 									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false,
-									"tableOption": "autoCreate"
+									"sqlWriterUseTableLock": false
 								},
 								"enableStaging": false,
 								"translator": {
@@ -106,11 +111,11 @@
 							]
 						},
 						{
-							"name": "SP_DELTA_LOAD",
+							"name": "Stored procedure1",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "DELTA_LOAD_COPY",
+									"activity": "CP_SOURCE_TO_STG",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -125,7 +130,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[sp_deltaload]",
+								"storedProcedureName": "[dbo].[sp_dependent_deltaload]",
 								"storedProcedureParameters": {
 									"pipelinetriggertime": {
 										"value": {
@@ -149,6 +154,52 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "LOOKUP_DEPENDENT_DELTA",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select * from SAP_LOOKUP2 WHERE Loadtype= 'DependentDelta'\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SAP_LOOKUP_FINAL",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SUB_SAP_DELTA_LOAD",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],

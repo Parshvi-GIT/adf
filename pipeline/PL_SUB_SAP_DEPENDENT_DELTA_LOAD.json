@@ -36,6 +36,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), + '''' + VBELN) , ',' )\nAS Result FROM VBAK",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -203,6 +204,11 @@
 				}
 			}
 		],
+		"variables": {
+			"Trigger_time": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

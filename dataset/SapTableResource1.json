@@ -14,7 +14,10 @@
 		"type": "SapTableResource",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "VBRK"
+			"tableName": {
+				"value": "@dataset().a",
+				"type": "Expression"
+			}
 		}
 	}
 }

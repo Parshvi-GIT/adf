@@ -35,14 +35,23 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SqlServerSource",
-									"sqlReaderQuery": "SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), + '''' + VBELN) , ',' )\nAS Result FROM VBAK",
-									"queryTimeout": "02:00:00",
+									"type": "SapTableSource",
+									"rfcTableOptions": {
+										"value": "@{CONCAT('SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), ''', 'PrimaryKey''),',''','') AS Result FROM SAP_LOOKUP2')}",
+										"type": "Expression"
+									},
+									"customRfcReadTableFunctionModule": "",
 									"partitionOption": "None"
 								},
 								"dataset": {
-									"referenceName": "SAP_LOOKUP_FINAL",
-									"type": "DatasetReference"
+									"referenceName": "SapTableResource1",
+									"type": "DatasetReference",
+									"parameters": {
+										"a": {
+											"value": "@item().Source_tblname",
+											"type": "Expression"
+										}
+									}
 								},
 								"firstRowOnly": false
 							}
@@ -74,7 +83,8 @@
 								"sink": {
 									"type": "SqlServerSink",
 									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
 								},
 								"enableStaging": false,
 								"translator": {

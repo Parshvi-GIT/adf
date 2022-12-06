@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SapTableSource",
-						"rfcTableOptions": "\n",
+						"rfcTableOptions": "SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), + '''' + VBELN+ '''') ,+ ',')\nAS Result FROM VBAK",
 						"customRfcReadTableFunctionModule": "",
 						"partitionOption": "None"
 					},
@@ -25,7 +25,7 @@
 						"referenceName": "SapTableResource1",
 						"type": "DatasetReference",
 						"parameters": {
-							"a": "EKKO"
+							"a": "VBRK"
 						}
 					},
 					"firstRowOnly": false

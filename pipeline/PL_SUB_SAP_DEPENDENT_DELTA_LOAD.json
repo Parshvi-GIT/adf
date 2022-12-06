@@ -35,23 +35,14 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SapTableSource",
-									"rfcTableOptions": {
-										"value": "@{CONCAT{SELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'VBELN IN'+''''+ VBELN +'''') ,',') FROM DBO.VBAK\nSELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'VBELN IN'+''''+ VBELN +'''') ,',') FROM DBO.VBRK\nSELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'VBELN IN'+''''+ VBELN +'''') ,',') FROM DBO.LIKP\nSELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'EBELN IN'+''''+ EBELN +'''') ,',') FROM DBO.EKKO}\n\n\n}",
-										"type": "Expression"
-									},
-									"customRfcReadTableFunctionModule": "",
+									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.VBRK\nUNION\nSELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.VBAK\nUNION\nSELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.LIKP\nUNION\nSELECT CONCAT('EBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ EBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.EKKO\n",
+									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
 								"dataset": {
-									"referenceName": "SapTableResource1",
-									"type": "DatasetReference",
-									"parameters": {
-										"a": {
-											"value": "@item().Source_tblname",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "SqlServerTable2",
+									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
 							}

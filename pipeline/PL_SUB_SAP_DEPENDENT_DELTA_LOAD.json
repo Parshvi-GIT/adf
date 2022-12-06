@@ -37,7 +37,7 @@
 								"source": {
 									"type": "SapTableSource",
 									"rfcTableOptions": {
-										"value": "@{CONCAT('SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), ''', 'PrimaryKey''),',''','') AS Result FROM SAP_LOOKUP2')}",
+										"value": "@{CONCAT{SELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'VBELN IN'+''''+ VBELN +'''') ,',') FROM DBO.VBAK\nSELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'VBELN IN'+''''+ VBELN +'''') ,',') FROM DBO.VBRK\nSELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'VBELN IN'+''''+ VBELN +'''') ,',') FROM DBO.LIKP\nSELECT STRING_AGG (CONVERT(NVARCHAR(MAX),'EBELN IN'+''''+ EBELN +'''') ,',') FROM DBO.EKKO}\n\n\n}",
 										"type": "Expression"
 									},
 									"customRfcReadTableFunctionModule": "",

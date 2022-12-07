@@ -37,7 +37,7 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": {
-										"value": "@CONCAT ('select concat(','''',item().PrimaryKey,'IN (','''',',','STRING_AGG\n (CONVERT(NVARCHAR(MAX)','''',item().PrimaryKey,',','''',')\nfrom','''',item().stg.DependentOnTable,''))",
+										"value": "@CONCAT ('select concat(',item().PrimaryKey,' IN (','''','STRING_AGG\n (CONVERT(NVARCHAR(MAX)',item().PrimaryKey,'),','''',')\nfrom','''',item().stg.DependentOnTable,''))",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",

@@ -17,12 +17,15 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.VBRK\nUNION\nSELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.VBAK\n",
+						"sqlReaderQuery": {
+							"value": "@CONCAT('SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), ', 'VBELN),',''','') AS Result FROM stg.vbrk')",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "SqlServerTable2",
+						"referenceName": "SAP_LOOKUP_FINAL",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false

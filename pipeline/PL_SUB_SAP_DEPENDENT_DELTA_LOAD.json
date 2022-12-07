@@ -36,7 +36,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "SqlServerSource",
-									"sqlReaderQuery": "SELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.VBRK\nUNION\nSELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.VBAK\nUNION\nSELECT CONCAT('VBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ VBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.LIKP\nUNION\nSELECT CONCAT('EBELN IN',STRING_AGG (CONVERT(NVARCHAR(MAX),''''+ EBELN +'''') ,',')) AS DOCUMENTNUMBER FROM DBO.EKKO\n",
+									"sqlReaderQuery": {
+										"value": "@CONCAT ('select concat(','''',item().PrimaryKey,'IN (','''',',','STRING_AGG\n (CONVERT(NVARCHAR(MAX)','''',item().PrimaryKey,',','''',')\nfrom','''',item().stg.DependentOnTable,''))",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -161,14 +164,7 @@
 			{
 				"name": "LOOKUP_DEPENDENT_DELTA",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Execute Pipeline1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -189,19 +185,6 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "Execute Pipeline1",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PL_SUB_SAP_DELTA_LOAD",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
 				}
 			}
 		],

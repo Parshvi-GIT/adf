@@ -211,8 +211,8 @@
 							}
 						},
 						{
-							"name": "Stored procedure1",
-							"type": "SqlServerStoredProcedure",
+							"name": "Script1",
+							"type": "Script",
 							"dependsOn": [
 								{
 									"activity": "SAP_TO_STG",
@@ -229,28 +229,50 @@
 								"secureInput": false
 							},
 							"userProperties": [],
-							"typeProperties": {
-								"storedProcedureName": "[dbo].[sp_deltaload]",
-								"storedProcedureParameters": {
-									"pipelinetriggertime": {
-										"value": {
-											"value": "@pipeline().TriggerTime",
-											"type": "Expression"
-										},
-										"type": "DateTime"
-									},
-									"TableName": {
-										"value": {
-											"value": "@item().Source_tblname",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
-							},
 							"linkedServiceName": {
 								"referenceName": "SqlServer1",
 								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"parameters": [
+											{
+												"name": "Rowread",
+												"type": "Int32",
+												"value": null,
+												"direction": "Output"
+											},
+											{
+												"name": "Rowcount",
+												"type": "Int32",
+												"value": null,
+												"direction": "Output"
+											},
+											{
+												"name": "pipelinetriggertime",
+												"type": "Datetime",
+												"value": {
+													"value": "@pipeline().TriggerTime",
+													"type": "Expression"
+												},
+												"direction": "Input"
+											},
+											{
+												"name": "TableName",
+												"type": "String",
+												"value": {
+													"value": "@item().Source_tblname",
+													"type": "Expression"
+												},
+												"direction": "Input"
+											}
+										],
+										"type": "Query",
+										"text": "exec sp_deltaload @pipelinetriggertime = pipelinetriggertime, @TableName = TableName, @Rowread = @RowsRead output , @Rowcount = @rowsCopied output"
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
 							}
 						}
 					]

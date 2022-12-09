@@ -269,7 +269,7 @@
 											}
 										],
 										"type": "Query",
-										"text": "exec sp_deltaload @pipelinetriggertime = pipelinetriggertime, @TableName = TableName, @Rowread = @RowsRead output , @Rowcount = @rowsCopied output"
+										"text": "exec sp_deltaload @pipelinetriggertime = @pipelinetriggertime, @TableName = @TableName, @Rowread = @Rowread output , @Rowcount= @Rowcount output"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"

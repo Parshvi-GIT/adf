@@ -1,5 +1,5 @@
 {
-	"name": "pipeline6",
+	"name": "PL_AUDIT_LOG",
 	"properties": {
 		"activities": [
 			{
@@ -100,7 +100,13 @@
 							"outputs": [
 								{
 									"referenceName": "Sink",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"b": {
+											"value": "@item().Filename",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -295,13 +301,7 @@
 							"outputs": [
 								{
 									"referenceName": "Sink_2",
-									"type": "DatasetReference",
-									"parameters": {
-										"c": {
-											"value": "@item().FILENAME",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								}
 							]
 						},
@@ -448,6 +448,9 @@
 				"type": "Array"
 			},
 			"A": {
+				"type": "String"
+			},
+			"dummy": {
 				"type": "String"
 			}
 		},

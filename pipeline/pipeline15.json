@@ -3,60 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SapTableSource",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "SqlServerSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate"
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "SapTableResource1",
-						"type": "DatasetReference",
-						"parameters": {
-							"a": "VBRK"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "SAP_FULL_LOAD_SINK",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "Set variable1",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "Script1",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -66,9 +17,64 @@
 				"typeProperties": {
 					"variableName": "dummy",
 					"value": {
-						"value": "@activity('Copy data1').abc",
+						"value": "@activity('Script1').abc",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Script1",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "Rowread",
+									"type": "Int32",
+									"value": null,
+									"direction": "Output"
+								},
+								{
+									"name": "Rowcount",
+									"type": "Int32",
+									"value": null,
+									"direction": "Output"
+								},
+								{
+									"name": "pipelinetriggertime",
+									"type": "Datetime",
+									"value": {
+										"value": "@pipeline().TriggerName",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "TableName",
+									"type": "String",
+									"value": "Source_tblname",
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "exec sp_deltaload @pipelinetriggertime = @pipelinetriggertime, @TableName = @TableName, @Rowread = @Rowread output , @Rowcount= @Rowcount output"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],

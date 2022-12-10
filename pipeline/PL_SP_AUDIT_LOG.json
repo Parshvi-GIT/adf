@@ -211,7 +211,7 @@
 							}
 						},
 						{
-							"name": "Script1",
+							"name": "STG_TO_DBO",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -273,6 +273,100 @@
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "SP_AUDIT_LOG_DBO",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "STG_TO_DBO",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[sp_Auditlog]",
+								"storedProcedureParameters": {
+									"ActivityEndTime": {
+										"value": {
+											"value": "@utcnow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"ActivityStartTime": {
+										"value": "",
+										"type": "DateTime"
+									},
+									"CopyDurationInSecs": {
+										"value": "",
+										"type": "Int32"
+									},
+									"DestinationSchema": {
+										"value": {
+											"value": "@item().Destinationtblschema",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ExecutionStatus": {
+										"value": {
+											"value": "@item().ExecutionFlag",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Message": {
+										"value": {
+											"value": "@activity('STG_TO_DBO').output.errors",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"rowsCopied": {
+										"value": "",
+										"type": "Int32"
+									},
+									"RowsRead": {
+										"value": "",
+										"type": "Int32"
+									},
+									"RunId": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"SourceSystem": {
+										"value": {
+											"value": "@activity('STG_TO_DBO').output.executionDetails[0].source.type",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"TableName": {
+										"value": {
+											"value": "@item().Source_tblname",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SqlServer1",
+								"type": "LinkedServiceReference"
 							}
 						}
 					]

@@ -309,7 +309,10 @@
 										"type": "DateTime"
 									},
 									"CopyDurationInSecs": {
-										"value": "",
+										"value": {
+											"value": "@activity('STG_TO_DBO').output.Duration",
+											"type": "Expression"
+										},
 										"type": "Int32"
 									},
 									"DestinationSchema": {
@@ -334,11 +337,17 @@
 										"type": "String"
 									},
 									"rowsCopied": {
-										"value": "",
+										"value": {
+											"value": "@item().Rowcount",
+											"type": "Expression"
+										},
 										"type": "Int32"
 									},
 									"RowsRead": {
-										"value": "",
+										"value": {
+											"value": "@item().Rowread",
+											"type": "Expression"
+										},
 										"type": "Int32"
 									},
 									"RunId": {

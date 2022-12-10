@@ -305,12 +305,15 @@
 										"type": "DateTime"
 									},
 									"ActivityStartTime": {
-										"value": "",
+										"value": {
+											"value": "@activity('SAP_TO_STG').output.ExecutionDetails[0].start",
+											"type": "Expression"
+										},
 										"type": "DateTime"
 									},
 									"CopyDurationInSecs": {
 										"value": {
-											"value": "@activity('STG_TO_DBO').output.Duration",
+											"value": "@activity('STG_TO_DBO').output. executionDuration",
 											"type": "Expression"
 										},
 										"type": "Int32"
@@ -331,21 +334,21 @@
 									},
 									"Message": {
 										"value": {
-											"value": "@activity('STG_TO_DBO').output.errors",
+											"value": "@activity('STG_TO_DBO'). Error",
 											"type": "Expression"
 										},
 										"type": "String"
 									},
 									"rowsCopied": {
 										"value": {
-											"value": "@item().Rowcount",
+											"value": "@activity('STG_TO_DBO').output.outputParameters.Rowcount",
 											"type": "Expression"
 										},
 										"type": "Int32"
 									},
 									"RowsRead": {
 										"value": {
-											"value": "@item().Rowread",
+											"value": "@activity('STG_TO_DBO').output.outputParameters.Rowread",
 											"type": "Expression"
 										},
 										"type": "Int32"
@@ -359,7 +362,7 @@
 									},
 									"SourceSystem": {
 										"value": {
-											"value": "@activity('STG_TO_DBO').output.executionDetails[0].source.type",
+											"value": "@activity('SAP_TO_STG').output.executionDetails[0].source.type",
 											"type": "Expression"
 										},
 										"type": "String"

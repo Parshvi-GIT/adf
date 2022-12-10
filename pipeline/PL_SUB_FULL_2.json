@@ -1,30 +1,10 @@
 {
-	"name": "pipeline15",
+	"name": "PL_SUB_FULL_2",
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Script1",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "dummy",
-					"value": {
-						"value": "@activity('Script1').abc",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Script1",
-				"type": "Script",
+				"name": "Lookup1",
+				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -33,48 +13,99 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": []
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "SqlServer1",
-					"type": "LinkedServiceReference"
-				},
 				"typeProperties": {
-					"scripts": [
+					"activities": [
 						{
-							"parameters": [
+							"name": "CP_SAP_TO_STG",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"enableStaging": false
+							}
+						},
+						{
+							"name": "SP_STG_TO_DBO",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
 								{
-									"name": "Rowread",
-									"type": "Int32",
-									"value": null,
-									"direction": "Output"
-								},
-								{
-									"name": "Rowcount",
-									"type": "Int32",
-									"value": null,
-									"direction": "Output"
-								},
-								{
-									"name": "pipelinetriggertime",
-									"type": "Datetime",
-									"value": {
-										"value": "@pipeline().TriggerName",
-										"type": "Expression"
-									},
-									"direction": "Input"
-								},
-								{
-									"name": "TableName",
-									"type": "String",
-									"value": "Source_tblname",
-									"direction": "Input"
+									"activity": "CP_SAP_TO_STG",
+									"dependencyConditions": [
+										"Succeeded"
+									]
 								}
 							],
-							"type": "Query",
-							"text": "exec sp_deltaload @pipelinetriggertime = @pipelinetriggertime, @TableName = @TableName, @Rowread = @Rowread output , @Rowcount= @Rowcount output"
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
+						},
+						{
+							"name": "AUDIT_DBO",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "SP_STG_TO_DBO",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
+						},
+						{
+							"name": "AUDIT_STG",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "CP_SAP_TO_STG",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
 						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
+					]
 				}
 			}
 		],

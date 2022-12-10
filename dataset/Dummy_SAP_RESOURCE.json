@@ -1,0 +1,15 @@
+{
+	"name": "Dummy_SAP_RESOURCE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sap_2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SapTableResource",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "VBAK"
+		}
+	}
+}

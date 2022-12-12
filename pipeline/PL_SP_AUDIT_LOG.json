@@ -105,6 +105,177 @@
 							]
 						},
 						{
+							"name": "STG_TO_DBO",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "SAP_TO_STG",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "SqlServer1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"parameters": [
+											{
+												"name": "rowsRead",
+												"type": "Int32",
+												"value": null,
+												"direction": "Output"
+											},
+											{
+												"name": "rowsCopied",
+												"type": "Int32",
+												"value": null,
+												"direction": "Output"
+											},
+											{
+												"name": "pipelinetriggertime",
+												"type": "Datetime",
+												"value": {
+													"value": "@pipeline().TriggerTime",
+													"type": "Expression"
+												},
+												"direction": "Input"
+											},
+											{
+												"name": "TableName",
+												"type": "String",
+												"value": {
+													"value": "@item().Source_tblname",
+													"type": "Expression"
+												},
+												"direction": "Input"
+											}
+										],
+										"type": "Query",
+										"text": "exec sp_deltaload @pipelinetriggertime = @pipelinetriggertime, @TableName = @TableName, @Rowread = rowsRead output , @Rowcount= @rowsCopied output"
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "SP_AUDIT_LOG_DBO",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "STG_TO_DBO",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[sp_Auditlog]",
+								"storedProcedureParameters": {
+									"ActivityEndTime": {
+										"value": {
+											"value": "@utcnow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"ActivityStartTime": {
+										"value": {
+											"value": "@activity('SAP_TO_STG').output.ExecutionDetails[0].start",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"CopyDurationInSecs": {
+										"value": {
+											"value": "@activity('STG_TO_DBO').output. executionDuration",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"DestinationSchema": {
+										"value": {
+											"value": "@item().Destinationtblschema",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ExecutionStatus": {
+										"value": {
+											"value": "@item().ExecutionFlag",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Message": {
+										"value": {
+											"value": "@activity('STG_TO_DBO'). Error",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"rowsCopied": {
+										"value": {
+											"value": "@activity('STG_TO_DBO').outputParameters.rowsCopied",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"RowsRead": {
+										"value": {
+											"value": "@activity('STG_TO_DBO').outputParameters.rowsRead",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"RunId": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"SourceSystem": {
+										"value": {
+											"value": "@activity('SAP_TO_STG').output.executionDetails[0].source.type",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"TableName": {
+										"value": {
+											"value": "@item().Source_tblname",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SqlServer1",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
 							"name": "SP_AUDIT_LOG_STG",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
@@ -178,177 +349,6 @@
 									"RowsRead": {
 										"value": {
 											"value": "@string(if(equals(activity('SAP_TO_STG').output.executionDetails[0].status,'Succeeded'),activity('SAP_TO_STG').output.rowsCopied,'Failed'))",
-											"type": "Expression"
-										},
-										"type": "Int32"
-									},
-									"RunId": {
-										"value": {
-											"value": "@pipeline().RunId",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"SourceSystem": {
-										"value": {
-											"value": "@activity('SAP_TO_STG').output.executionDetails[0].source.type",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"TableName": {
-										"value": {
-											"value": "@item().Source_tblname",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "SqlServer1",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "STG_TO_DBO",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "SAP_TO_STG",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "SqlServer1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"parameters": [
-											{
-												"name": "Rowread",
-												"type": "Int32",
-												"value": null,
-												"direction": "Output"
-											},
-											{
-												"name": "Rowcount",
-												"type": "Int32",
-												"value": null,
-												"direction": "Output"
-											},
-											{
-												"name": "pipelinetriggertime",
-												"type": "Datetime",
-												"value": {
-													"value": "@pipeline().TriggerTime",
-													"type": "Expression"
-												},
-												"direction": "Input"
-											},
-											{
-												"name": "TableName",
-												"type": "String",
-												"value": {
-													"value": "@item().Source_tblname",
-													"type": "Expression"
-												},
-												"direction": "Input"
-											}
-										],
-										"type": "Query",
-										"text": "exec sp_deltaload @pipelinetriggertime = @pipelinetriggertime, @TableName = @TableName, @Rowread = @Rowread output , @Rowcount= @Rowcount output"
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
-							"name": "SP_AUDIT_LOG_DBO",
-							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "STG_TO_DBO",
-									"dependencyConditions": [
-										"Completed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"storedProcedureName": "[dbo].[sp_Auditlog]",
-								"storedProcedureParameters": {
-									"ActivityEndTime": {
-										"value": {
-											"value": "@utcnow()",
-											"type": "Expression"
-										},
-										"type": "DateTime"
-									},
-									"ActivityStartTime": {
-										"value": {
-											"value": "@activity('SAP_TO_STG').output.ExecutionDetails[0].start",
-											"type": "Expression"
-										},
-										"type": "DateTime"
-									},
-									"CopyDurationInSecs": {
-										"value": {
-											"value": "@activity('STG_TO_DBO').output. executionDuration",
-											"type": "Expression"
-										},
-										"type": "Int32"
-									},
-									"DestinationSchema": {
-										"value": {
-											"value": "@item().Destinationtblschema",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"ExecutionStatus": {
-										"value": {
-											"value": "@item().ExecutionFlag",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"Message": {
-										"value": {
-											"value": "@activity('STG_TO_DBO'). Error",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"rowsCopied": {
-										"value": {
-											"value": "@activity('STG_TO_DBO').output.outputParameters.Rowcount",
-											"type": "Expression"
-										},
-										"type": "Int32"
-									},
-									"RowsRead": {
-										"value": {
-											"value": "@activity('STG_TO_DBO').output.outputParameters.Rowread",
 											"type": "Expression"
 										},
 										"type": "Int32"
